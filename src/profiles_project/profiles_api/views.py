@@ -55,6 +55,8 @@ class HelloApiView(APIView):
 class HelloViewSet(viewsets.ViewSet):
     """test viewset"""
 
+    serializer_class = serializers.HelloUserSerializer
+
     def list(self, request):
         """ list out all object"""
         a_viewset = [
@@ -63,3 +65,32 @@ class HelloViewSet(viewsets.ViewSet):
             'More Functiollity With Less code'
         ]
         return Response({"massage":"Hello","a_viewset":a_viewset})
+
+    def create(self, request):
+        """create a new hello page"""
+
+        serializer = serializers.HelloUserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.data.get('name')
+            massage = 'Hello {0}'.format(name)
+
+            return Response({'massage':massage})
+        else:
+            return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        """handling getting object by its id"""
+        return Response({'http_method':'Get'})
+
+    def update(self, request, pk=None):
+        """handles update an object"""
+        return Response({'http_method':'Put'})
+
+    def partial_update(self, request, pk=None):
+        """Handle update partial data"""
+        return Response({"http_method":"patch"})
+
+    def destroy(self, request, pk=None):
+        """Handle delete data"""
+        return Response({"http_method":"Delete"})
